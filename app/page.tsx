@@ -48,4 +48,4 @@ function Example() {
   );
 }
 
-export default withAuthenticator(Example, { hideSignUp: true });
+export default withAuthenticator(Example);
