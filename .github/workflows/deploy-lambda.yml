@@ -1,0 +1,198 @@
+# ============================================================================
+# GITHUB ACTIONS WORKFLOW: Deploy Lambda Function
+# ============================================================================
+#
+# WHAT THIS DOES:
+# ---------------
+# When you push changes to the Lambda/ folder in GitHub, this workflow
+# automatically deploys all your Python code to the "TestFunction" Lambda
+# in AWS.
+#
+# HOW IT WORKS:
+# -------------
+# 1. Packages all Python files from Lambda/ folder into a single zip
+# 2. Uploads the zip to the TestFunction Lambda in AWS
+# 3. All 20 Python files are deployed together as one Lambda function
+#
+# WHICH FILE RUNS?
+# ----------------
+# The "Handler" setting in AWS Lambda determines which file runs.
+# For example:
+#   - Handler: relocate_file.lambda_handler → runs relocate_file.py
+#   - Handler: validate_headers.lambda_handler → runs validate_headers.py
+#
+# ============================================================================
+
+name: Deploy Lambda Function
+
+on:
+  push:
+    branches:
+      - various-new-fucntionality
+      - main
+      - master
+    paths:
+      # Only runs when Lambda folder changes
+      - 'Lambda/**'
+
+  workflow_dispatch:
+    # Allows manual trigger from GitHub Actions tab
+
+env:
+  AWS_REGION: us-east-1
+  PYTHON_VERSION: '3.11'
+  # The name of your Lambda function in AWS
+  LAMBDA_FUNCTION_NAME: TestFunction
+
+jobs:
+  # ==========================================================================
+  # JOB: PACKAGE AND DEPLOY
+  # ==========================================================================
+  deploy:
+    name: Package and Deploy to TestFunction
+    runs-on: ubuntu-latest
+
+    steps:
+      # ----------------------------------------------------------------------
+      # STEP 1: Checkout the repository
+      # ----------------------------------------------------------------------
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # ----------------------------------------------------------------------
+      # STEP 2: Set up Python
+      # ----------------------------------------------------------------------
+      - name: Set up Python ${{ env.PYTHON_VERSION }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      # ----------------------------------------------------------------------
+      # STEP 3: Install dependencies (if requirements.txt exists)
+      # ----------------------------------------------------------------------
+      - name: Install Dependencies
+        run: |
+          if [ -f "Lambda/requirements.txt" ]; then
+            echo "Installing dependencies from requirements.txt..."
+            pip install -r Lambda/requirements.txt -t Lambda/
+          else
+            echo "No requirements.txt found - skipping"
+          fi
+
+      # ----------------------------------------------------------------------
+      # STEP 4: Create deployment package (zip file)
+      # ----------------------------------------------------------------------
+      - name: Create Deployment Package
+        run: |
+          echo "========================================"
+          echo "Creating Lambda deployment package..."
+          echo "========================================"
+
+          cd Lambda
+
+          echo ""
+          echo "Files being packaged:"
+          echo "---------------------"
+          ls -la *.py
+
+          # Create zip with all Python files
+          zip -r ../lambda-package.zip .
+
+          cd ..
+
+          echo ""
+          echo "========================================"
+          echo "Package created successfully!"
+          ls -lh lambda-package.zip
+          echo "========================================"
+
+      # ----------------------------------------------------------------------
+      # STEP 5: Configure AWS credentials
+      # ----------------------------------------------------------------------
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # ----------------------------------------------------------------------
+      # STEP 6: Deploy to AWS Lambda
+      # ----------------------------------------------------------------------
+      - name: Deploy to AWS Lambda
+        run: |
+          echo "========================================"
+          echo "Deploying to Lambda: ${{ env.LAMBDA_FUNCTION_NAME }}"
+          echo "========================================"
+
+          aws lambda update-function-code \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --zip-file fileb://lambda-package.zip \
+            --publish
+
+          echo ""
+          echo "========================================"
+          echo "DEPLOYMENT SUCCESSFUL!"
+          echo "========================================"
+
+      # ----------------------------------------------------------------------
+      # STEP 7: Show deployment info
+      # ----------------------------------------------------------------------
+      - name: Verify Deployment
+        run: |
+          echo "========================================"
+          echo "Lambda Function Details:"
+          echo "========================================"
+
+          aws lambda get-function \
+            --function-name ${{ env.LAMBDA_FUNCTION_NAME }} \
+            --query 'Configuration.[FunctionName,Runtime,Handler,LastModified,CodeSize]' \
+            --output table
+
+          echo ""
+          echo "Files deployed:"
+          echo "---------------"
+          echo "  - Split_CSV_File_By_BU_FiveCharacters.py"
+          echo "  - add_tags_to_s3_object.py"
+          echo "  - build_tsql_from_tags.py"
+          echo "  - execute_tsql.py"
+          echo "  - find_file_by_tags.py"
+          echo "  - generate_validation_file.py"
+          echo "  - get_aws_secret.py"
+          echo "  - get_bu_split_field.py"
+          echo "  - get_cognito_email.py"
+          echo "  - get_tags_from_file.py"
+          echo "  - lambda_function.py"
+          echo "  - load_file.py"
+          echo "  - load_file_ap_invoices_prifas.py"
+          echo "  - parse_filename.py"
+          echo "  - relocate_file.py"
+          echo "  - s3_helper.py"
+          echo "  - s3_upload.py"
+          echo "  - send_file_notification_email.py"
+          echo "  - validate_headers.py"
+          echo "  - validate_tag_values.py"
+          echo ""
+          echo "========================================"
+
+# ============================================================================
+# HOW THIS WORKFLOW WORKS (VISUAL)
+# ============================================================================
+#
+#   GitHub Push to Lambda/ folder
+#              │
+#              ▼
+#   ┌─────────────────────────────────┐
+#   │  1. Checkout code               │
+#   │  2. Set up Python               │
+#   │  3. Install dependencies        │
+#   │  4. Zip all .py files together  │
+#   │  5. Configure AWS credentials   │
+#   │  6. Upload zip to TestFunction  │
+#   │  7. Verify deployment           │
+#   └─────────────────────────────────┘
+#              │
+#              ▼
+#   TestFunction Lambda updated with all 20 Python files!
+#
+# ============================================================================

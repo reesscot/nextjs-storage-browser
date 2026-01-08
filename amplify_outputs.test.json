@@ -1,0 +1,125 @@
+{
+  "auth": {
+    "user_pool_id": "us-east-1_iX92bMo7t",
+    "aws_region": "us-east-1",
+    "user_pool_client_id": "1j24bgbmibu5tr8b8psc7ivjl",
+    "identity_pool_id": "us-east-1:e4aa252d-ae90-40d9-b7d7-e69903adc24c",
+    "mfa_methods": [],
+    "standard_required_attributes": [
+      "email"
+    ],
+    "username_attributes": [
+      "email"
+    ],
+    "user_verification_types": [
+      "email"
+    ],
+    "mfa_configuration": "NONE",
+    "password_policy": {
+      "min_length": 8,
+      "require_lowercase": true,
+      "require_numbers": true,
+      "require_symbols": true,
+      "require_uppercase": true
+    },
+    "unauthenticated_identities_enabled": true
+  },
+  "storage": {
+    "aws_region": "us-east-1",
+    "bucket_name": "amplify-d2rr9r4nmj79me-va-storagebrowsertestbucket-lrgq2rrslniw",
+    "buckets": [
+      {
+        "name": "storage-browser-test",
+        "bucket_name": "amplify-d2rr9r4nmj79me-va-storagebrowsertestbucket-lrgq2rrslniw",
+        "aws_region": "us-east-1",
+        "paths": {
+          "ConversionFiles/*": {
+            "authenticated": [
+              "get",
+              "list"
+            ],
+            "entityidentity": [
+              "get",
+              "list",
+              "write",
+              "delete"
+            ]
+          },
+          "ConversionFileErrors/*": {
+            "authenticated": [
+              "get",
+              "list"
+            ],
+            "entityidentity": [
+              "get",
+              "list",
+              "write",
+              "delete"
+            ]
+          },
+          "InitialUpload/*": {
+            "authenticated": [
+              "get",
+              "list"
+            ],
+            "entityidentity": [
+              "get",
+              "list",
+              "write",
+              "delete"
+            ]
+          },
+          "InitialUploadErrors/*": {
+            "authenticated": [
+              "get",
+              "list"
+            ],
+            "entityidentity": [
+              "get",
+              "list",
+              "write",
+              "delete"
+            ]
+          },
+          "TSQLFiles/*": {
+            "authenticated": [
+              "get",
+              "list"
+            ],
+            "entityidentity": [
+              "get",
+              "list",
+              "write",
+              "delete"
+            ]
+          },
+          "DataValidation/*": {
+            "authenticated": [
+              "get",
+              "list"
+            ],
+            "entityidentity": [
+              "get",
+              "list",
+              "write",
+              "delete"
+            ]
+          },
+          "ConversionFileErrors/Mock8/*": {
+            "authenticated": [
+              "get",
+              "list"
+            ],
+            "entityidentity": [
+              "get",
+              "list",
+              "write",
+              "delete"
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "version": "1.3"
+}

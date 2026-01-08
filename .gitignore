@@ -37,5 +37,5 @@ next-env.d.ts
 
 # amplify
 .amplify
-amplify_outputs*
+# amplify_outputs.json is NOT ignored - we use a custom config for hacienda-erp bucket
 amplifyconfiguration*

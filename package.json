@@ -12,6 +12,7 @@
     "@aws-amplify/storage": "^6.6.8-storage-browser.cf3aed2.0",
     "@aws-amplify/ui-react-storage": "^0.0.0-storage-browser-c6f556e-20241001234920",
     "aws-amplify": "^6.6.3-storage-browser.cf3aed2.0",
+    "aws-sdk": "^2.1692.0",
     "next": "14.2.14",
     "react": "^18",
     "react-dom": "^18"

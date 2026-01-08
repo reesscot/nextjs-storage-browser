@@ -1,6 +1,6 @@
 import { defineStorage } from "@aws-amplify/backend";
 
-export const storage = defineStorage({
+/*export const storage = defineStorage({
   name: "storage-browser-test",
   access: (allow: any) => ({
     'media-readwritedelete/*': [allow.authenticated.to(['read', 'write', 'delete'])],
@@ -13,6 +13,47 @@ export const storage = defineStorage({
       allow.entity('identity').to(['read', 'write', 'delete'])
     ],
     'private-useronlyreadwritedelete/{entity_id}/*': [
+      allow.entity('identity').to(['read', 'write', 'delete'])
+    ]
+  })
+});*/
+
+
+export const storage = defineStorage({
+  name: 'storage-browser-test',
+  access: (allow) => ({
+    'ConversionFiles/*': [
+      allow.authenticated.to(['read']),
+      allow.entity('identity').to(['read', 'write', 'delete'])
+    ]
+    ,
+    'ConversionFileErrors/*': [
+      allow.authenticated.to(['read']),
+      allow.entity('identity').to(['read', 'write', 'delete'])
+    ]
+    ,
+    'InitialUpload/*': [
+      allow.authenticated.to(['read']),
+      allow.entity('identity').to(['read', 'write', 'delete'])
+    ]
+    ,
+    'InitialUploadErrors/*': [
+      allow.authenticated.to(['read']),
+      allow.entity('identity').to(['read', 'write', 'delete'])
+    ]
+    ,
+    'TSQLFiles/*': [
+      allow.authenticated.to(['read']),
+      allow.entity('identity').to(['read', 'write', 'delete'])
+    ]
+    ,
+    'DataValidation/*': [
+      allow.authenticated.to(['read']),
+      allow.entity('identity').to(['read', 'write', 'delete'])
+    ]
+    ,
+    'ConversionFileErrors/Mock8/*': [
+      allow.authenticated.to(['read']),
       allow.entity('identity').to(['read', 'write', 'delete'])
     ]
   })
